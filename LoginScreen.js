@@ -62,7 +62,6 @@ export default function LoginScreen() {
               style={{ ...styles.password, borderColor: !pass ? "#E8E8E8" : "#FF6C00" }}
               value={state.password}
               onBlur={() => setPass(false)}
-              // onSubmitEditing={setIsShowKeyboard(false)}
               onChangeText={(value) => setState((prevState) => ({...prevState, password: value}))}
             />
               <TouchableOpacity style={styles.showPas} onPress={togge}>
@@ -161,7 +160,6 @@ const styles = StyleSheet.create({
   },
   reg: {
     fontFamily: 'Roboto',
-    // fontWeight: 400,
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
