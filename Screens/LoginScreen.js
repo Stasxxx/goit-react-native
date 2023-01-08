@@ -42,7 +42,7 @@ export default function LoginScreen() {
       <View style={styles.container} >
         <ImageBackground
             style={styles.image}
-            source={require('./Screens/PhotoBG.jpg')}
+            source={require('./Screens/Images/PhotoBG.jpg')}
         ></ImageBackground>
         
           <View style={{

@@ -42,7 +42,7 @@ export default function RegistrationScreens() {
           
             <ImageBackground
                 style={styles.image}
-                source={require('./Screens/PhotoBG.jpg')}
+                source={require('./Screens/Images/PhotoBG.jpg')}
             ></ImageBackground>
         
           <View style={{
@@ -53,7 +53,7 @@ export default function RegistrationScreens() {
             <TouchableOpacity style={styles.addFoto}>
               <Image
               style={styles.img}
-              source={require('./Screens/add.png')}
+              source={require('./Screens/Images/add.png')}
               ></Image>
           </TouchableOpacity>
           </View>
