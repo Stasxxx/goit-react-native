@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const initialState = {
@@ -7,7 +8,7 @@ const initialState = {
   password: "",
 };
 
-export default function RegistrationScreens() {
+export default function RegistrationScreens({navigation}) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [login, setLogin] = useState(false);
   const [pass, setPass] = useState(false);
@@ -42,7 +43,7 @@ export default function RegistrationScreens() {
           
             <ImageBackground
                 style={styles.image}
-                source={require('./Screens/Images/PhotoBG.jpg')}
+                source={require('./Images/PhotoBG.jpg')}
             ></ImageBackground>
         
           <View style={{
@@ -53,7 +54,7 @@ export default function RegistrationScreens() {
             <TouchableOpacity style={styles.addFoto}>
               <Image
               style={styles.img}
-              source={require('./Screens/Images/add.png')}
+              source={require('./Images/add.png')}
               ></Image>
           </TouchableOpacity>
           </View>
@@ -84,10 +85,11 @@ export default function RegistrationScreens() {
                   <Text style={styles.regBtnTitle} activeOpacity={0.8}>Зарегистрироваться</Text>
             </TouchableOpacity>
           </View>
-              <TouchableOpacity style={styles.btnlogIn}>
+              <TouchableOpacity style={styles.btnlogIn} onPress={()=> navigation.navigate("Login")}>
                   <Text style={styles.logInTitle} activeOpacity={0.8}>Уже есть аккаунт? Войти</Text>
               </TouchableOpacity>
-          </View>
+        </View>
+        <StatusBar style="auto" />
         </View>
       </TouchableWithoutFeedback>
     )
