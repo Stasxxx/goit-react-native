@@ -33,6 +33,7 @@ export default function LoginScreen({navigation}) {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     console.log(state);
+    navigation.navigate("Home")
     setState(initialState)
   }
 
@@ -43,12 +44,12 @@ export default function LoginScreen({navigation}) {
         <ImageBackground
             style={styles.image}
             source={require('./Images/PhotoBG.jpg')}
-        ></ImageBackground>
-        
-          <View style={{
-              ...styles.backGround,
-              marginBottom: isShowKeyboard ? -100 : 144,
-              height: isShowKeyboard ? 350 : 345,
+        >
+            <View style={{
+            ...styles.backGround,
+              paddingBottom:  isShowKeyboard ? 0 : 144,
+              marginBottom: isShowKeyboard ? -100 : 0,
+              height: isShowKeyboard ? 350 : 489,
             }}>
             <View>
               <Text style={styles.title}>Войти</Text>
@@ -67,15 +68,17 @@ export default function LoginScreen({navigation}) {
               <TouchableOpacity style={styles.showPas} onPress={togge}>
                   <Text style={styles.showPassTitle} activeOpacity={0.8}>Показать</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.logInBtn}>
-                  <Text style={styles.logInBtnTitle} activeOpacity={0.8} onPress={logIn}>Войти</Text>
+              <TouchableOpacity style={styles.logInBtn} onPress={logIn}>
+              <Text style={styles.logInBtnTitle} activeOpacity={0.8}>Войти</Text>
               </TouchableOpacity>
             </View>
               <TouchableOpacity style={styles.btnlogIn} onPress={()=> navigation.navigate("Register")}>
                   <Text style={styles.reg} activeOpacity={0.8}>Нет аккаунта? Зарегистрироваться</Text>
               </TouchableOpacity>
               
-        </View>
+          </View>
+        </ImageBackground>
+          
         <StatusBar style="auto" />
       </View>
     </TouchableWithoutFeedback>
@@ -85,19 +88,20 @@ export default function LoginScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    resizeMode: "cover",
   },
    image: {
     flex: 1,
+    resizeMode: "cover",
     justifyContent: "flex-end",
-    alignItems: "center",
   },
    backGround: {
-    borderRadius: 25,
+    backgroundColor: '#fff',
     justifyContent: "flex-end",
     alignItems: 'center',
-    
-    height: 489,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    // height: 489,
   },
   title: {
     fontFamily: 'Roboto',

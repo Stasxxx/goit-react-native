@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import * as ImagePicker from 'expo-image-picker';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const initialState = {
@@ -10,6 +11,7 @@ const initialState = {
 
 export default function RegistrationScreens({navigation}) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [image, setImage] = useState(null);
   const [login, setLogin] = useState(false);
   const [pass, setPass] = useState(false);
   const [email, setEmail] = useState(false);
@@ -34,29 +36,52 @@ export default function RegistrationScreens({navigation}) {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     console.log(state);
+    navigation.navigate("Home");
     setState(initialState)
   }
+
+  const addImage = async () => {
+    let _image = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4,3],
+    quality: 1,
+    });
+    const uri = _image.assets[0].uri 
+    console.log(JSON.stringify(_image.canceled));
+  if (!_image.canceled) {
+    setImage(uri);
+  }
+  };
+
   return (
       <TouchableWithoutFeedback onPress={() => {setIsShowKeyboard(false);
     Keyboard.dismiss();}}>
         <View style={styles.container}>
           
-            <ImageBackground
+        <ImageBackground
                 style={styles.image}
                 source={require('./Images/PhotoBG.jpg')}
-            ></ImageBackground>
-        
+        >
           <View style={{
             ...styles.backGround,
-            marginBottom: isShowKeyboard ? -100 : 78,
+            marginBottom: isShowKeyboard ? -100 : 0,
+            paddingBottom: isShowKeyboard ? 0 : 78,
+            height: isShowKeyboard ? 470 : 549,
           }}>
-          <View style={styles.contFoto}>
-            <TouchableOpacity style={styles.addFoto}>
-              <Image
-              style={styles.img}
-              source={require('./Images/add.png')}
-              ></Image>
-          </TouchableOpacity>
+          <View style={styles.addFoto}>
+            <View style={styles.contFoto}>
+              {
+                image  && <Image source={{ uri: image }} style={{ width: 120, height: 120 }} />
+              }
+              
+            </View>
+            <TouchableOpacity onPress={addImage}>
+                <Image
+                style={styles.img}
+                source={require('./Images/add.png')}
+                />
+            </TouchableOpacity>
           </View>
           <View>
               <Text style={styles.regTitle}>Регистрация</Text>
@@ -83,12 +108,15 @@ export default function RegistrationScreens({navigation}) {
               </TouchableOpacity>
               <TouchableOpacity style={styles.regBtn} onPress={keyboardHide}>
                   <Text style={styles.regBtnTitle} activeOpacity={0.8}>Зарегистрироваться</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
           </View>
               <TouchableOpacity style={styles.btnlogIn} onPress={()=> navigation.navigate("Login")}>
                   <Text style={styles.logInTitle} activeOpacity={0.8}>Уже есть аккаунт? Войти</Text>
               </TouchableOpacity>
         </View>
+        </ImageBackground>
+        
+          
         <StatusBar style="auto" />
         </View>
       </TouchableWithoutFeedback>
@@ -103,27 +131,30 @@ const styles = StyleSheet.create({
    image: {
     flex: 1,
     justifyContent: "flex-end",
-    alignItems: "center",
+    // alignItems: "center",
   },
   backGround: {
     justifyContent: "flex-end",
     alignItems: 'center',
-    borderRadius: 20,
-    
-    height: 470,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    height: 549,
   },
   contFoto: {
+    overflow:'hidden',
     width: 120,
     height: 120,
     borderRadius: 16,
     backgroundColor: "#F6F6F6",
   },
-  addFoto: {
-
-  },
+  // imgPos: {
+  //   position:'relative',
+  // },
   img: {
-    marginLeft: 105,
-    marginTop: 81,
+    position: 'absolute',
+    bottom: 15,
+    right: -10,
   },
   regTitle: {
     fontFamily: 'Roboto',
@@ -199,7 +230,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
-
     color: "#1B4371",
   },
 });
