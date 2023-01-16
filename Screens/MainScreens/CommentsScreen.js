@@ -1,7 +1,10 @@
+import { View, Text } from "react-native"
 
 
-export const commentsScreen = () => {
+export const CommentsScreen = () => {
     return (
-        null
+        <View>
+            <Text>Hi</Text>
+        </View>
     )
 }

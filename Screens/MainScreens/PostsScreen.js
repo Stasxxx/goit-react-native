@@ -34,13 +34,13 @@ export const PostsScreen = ({navigation}) => {
                     <Text style={styles.postName}>Имя</Text> 
                     <View style={{flexDirection: "row", justifyContent: 'space-between', marginTop: 11}}>
                         <View style={{flexDirection: "row"}}>
-                            <TouchableOpacity style={{marginRight: 9}} activeOpacity={0.6} >
+                            <TouchableOpacity style={{ marginRight: 9 }} activeOpacity={0.6} onPress={() => navigation.navigate('Comments')}>
                                 <Image style={{width: 18,height: 18,}} source={require('../Images/Shape.png')}/>
                             </TouchableOpacity>
                             <Text>0</Text>
                         </View>
                         <View style={{flexDirection: "row"}}>
-                            <TouchableOpacity style={{marginRight: 9}} activeOpacity={0.6} >
+                            <TouchableOpacity style={{marginRight: 9}} activeOpacity={0.6} onPress={()=> navigation.navigate('Map')}>
                                 <Image style={{width: 24,height: 24,}} source={require('../Images/map-pin.png')}/>
                             </TouchableOpacity>
                             <Text>Розташування</Text>

@@ -1,7 +1,10 @@
+import { Text, View } from "react-native"
 
 
-export const mapScreen = () => {
+export const MapScreen = () => {
     return (
-        null
+        <View>
+            <Text>Hi</Text>
+        </View>
     )
 }

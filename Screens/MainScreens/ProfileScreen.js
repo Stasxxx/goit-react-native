@@ -54,7 +54,7 @@ export const ProfileScreen = ({navigation}) => {
                         <View style={styles.comentCont}>
                             <View style={{ flex: 1, flexDirection: 'row'}}>
                                 <View style={{flexDirection: 'row', marginRight: 24}}>
-                                    <TouchableOpacity style={{marginRight: 9}} activeOpacity={0.6} >
+                                    <TouchableOpacity style={{marginRight: 9}} activeOpacity={0.6} onPress={()=> navigation.navigate('Comments')}>
                                         <Image style={{width: 18,height: 18,}} source={require('../Images/Coment.png')}/>
                                     </TouchableOpacity>
                                     <Text>0</Text>
@@ -67,7 +67,7 @@ export const ProfileScreen = ({navigation}) => {
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row'}}>
-                                <TouchableOpacity style={{marginRight: 4}} activeOpacity={0.6} >
+                                <TouchableOpacity style={{ marginRight: 4 }} activeOpacity={0.6} onPress={() => navigation.navigate('Map')}>
                                 <Image style={{width: 18,height: 18,}} source={require('../Images/map-pin.png')}/>
                                 </TouchableOpacity>
                                 <Text>Розташування</Text>
