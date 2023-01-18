@@ -4,8 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { PostsScreen } from './PostsScreen';
 import { CreatePostsScreen } from './CreatePostsScreen';
 import { ProfileScreen } from './ProfileScreen';
-import { CommentsScreen } from './CommentsScreen';
-import { MapScreen } from './MapScreen'
+import { CommentsScreen } from '../NestedScreens/CommentsScreen';
+import { MapScreen } from '../NestedScreens/MapScreen'
 
 
 const MainTab = createBottomTabNavigator()
@@ -51,12 +51,12 @@ export const Home = ({navigation}) => {
                     }
                 }}
                 name='Profile' component={ProfileScreen} />
-            <MainTab.Screen  detachInactiveScreens={false} options={
+            {/* <MainTab.Screen  detachInactiveScreens={false} options={
                 { tabBarButton: ()=> null ,tabBarStyle: { display: "none" }, headerShown: false}}
                 name='Comments' component={CommentsScreen} />
              <MainTab.Screen  detachInactiveScreens={false} options={
                 { tabBarButton: ()=> null ,tabBarStyle: { display: "none" }, headerShown: false}}
-                name='Map' component={MapScreen} />
+                name='Map' component={MapScreen} /> */}
             </MainTab.Navigator>
     )
 }

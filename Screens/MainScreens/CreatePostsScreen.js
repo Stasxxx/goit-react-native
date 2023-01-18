@@ -1,33 +1,65 @@
-import { StyleSheet, View, Text, Image,TextInput,TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
+import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
+import { Camera } from 'expo-camera';
+import * as Location from 'expo-location';
 
 
-export const CreatePostsScreen = ({navigation}) => {
+export const CreatePostsScreen = ({ navigation }) => {
+    const [camera, setCamera] = useState(null);
+    const [photo, setPhoto] = useState("");
+
+    const takePhoto = async () => {
+        const photo = await camera.takePictureAsync();
+        const location = await Location.getCurrentPositionAsync({});
+        console.log(location.coords.latitude)
+        console.log(location.coords.longitude)
+
+        setPhoto(photo.uri);
+    };
+    
+    const sendPhoto = () => {
+        navigation.navigate('DefaultScreen', photo)
+    }
+    
+    useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+    })();
+  }, []);
      return (
         <View style={styles.container}>
              <View style={styles.header}>
                 <Text style={styles.title}>
                     Создать публикацию
                 </Text>
-                 <TouchableOpacity style={styles.btnArrow} activeOpacity={0.7} onPress={() =>navigation.navigate('Post')}>
+                 <TouchableOpacity style={styles.btnArrow} activeOpacity={0.7} onPress={() =>navigation.navigate('DefaultScreen')}>
                    <Image style={styles.imgArrow} source={require('../Images/arrow-left.png')} />  
                  </TouchableOpacity>
                  
             </View>
                 
              <View style={styles.publicationCont}>
-                 <View style={styles.imgCont}>
-                        <Image style={styles.img} source={require('../Images/camera.png')} />
-                 </View>
+                 
+                 <Camera style={styles.cameraCont} ref={setCamera}>
+                    <TouchableOpacity onPress={takePhoto}  activeOpacity={0.9}>
+                         <Image style={styles.cameraImg} source={require('../Images/camera.png')} />
+                    </TouchableOpacity>
+                 </Camera>
                  <Text style={styles.addFoto}>Загрузите фото</Text>
-                <TouchableOpacity style={styles.titlePlace} activeOpacity={0.7}>
-                  <Text style={styles.textName}>Название...</Text>
-                 </TouchableOpacity>
-                <TouchableOpacity style={styles.place} activeOpacity={0.7}>
-                     <Text style={styles.textPlace}>Местность...</Text>
+                
+                  <TextInput style={styles.textName} placeholder="Название..."/>
+                 
+                <View style={{marginTop: 30}} >
+                     <TextInput style={styles.textPlace} placeholder="Местность..."/>
                      <Image style={styles.textPlaceImg} source={require('../Images/map-pin.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.regBtn} activeOpacity={0.8}>
+                </View>
+                <TouchableOpacity style={styles.regBtn} activeOpacity={0.8} onPress={sendPhoto}>
                   <Text style={styles.regBtnTitle} >Опубликовать</Text>
                 </TouchableOpacity>
                 
@@ -77,23 +109,18 @@ const styles = StyleSheet.create({
         paddingRight: 16,
         marginTop: 32,
     },
-    imgCont: {
-        width: 343,
+    cameraCont: {
         height: 240,
-        backgroundColor: '#F6F6F6',
-        border: 1,
-        borderColor: '#E8E8E8',
         borderRadius: 8,
-        marginLeft: 'auto',
-        marginRight: 'auto',
     },
-    img: {
+    cameraImg: {
         width: 60,
         height: 60,
         justifyContent: 'center',
         alignContent:'center',
         marginVertical: 90,
         marginHorizontal: 141,
+        opacity: 0.3,
     },
     addFoto: {
         marginTop: 8,
@@ -102,21 +129,15 @@ const styles = StyleSheet.create({
         lineHeight: 19,
         color: "#BDBDBD"
     },
-    titlePlace: {
-        marginTop: 48,
-        position: 'relative',
-        // borderWidth: 5,
-        // borderRadius: 30,
-        // backgroundColor: "#F6F6F6",
-    },
     textName: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
         lineHeight: 19,
-        color: "#BDBDBD",
+        color: "#212121",
         paddingBottom: 15,
         borderBottomWidth: 1,
         borderColor: '#a9a9a9',
+        marginTop: 48,
     },
     textPlace: {
         fontFamily: 'Roboto-Regular',
@@ -125,7 +146,6 @@ const styles = StyleSheet.create({
         color: "#BDBDBD",
         paddingLeft: 26,
         paddingBottom: 15,
-        marginTop: 32,
         borderBottomWidth: 1,
         borderColor: '#a9a9a9',
     },
@@ -148,7 +168,7 @@ const styles = StyleSheet.create({
         color:'#BDBDBD',
     },
     trashBtn: {
-        marginTop: 120,
+        marginTop: 100,
         marginLeft: 'auto',
         marginRight: 'auto',
     },
