@@ -1,4 +1,4 @@
-import { NavigationContainer, useRoute } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { useState } from 'react';
 import { useFonts } from 'expo-font';
 import { Router } from './router';
@@ -6,12 +6,13 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase/config';
+import {Main} from './components/Main';
 
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
 
-  onAuthStateChanged(auth, (user) => { setUser(user) });
+  // onAuthStateChanged(auth, (user) => { setUser(user) });
 
   const [fontsLoaded] = useFonts({
     'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
@@ -23,11 +24,12 @@ export default function App() {
     return null;
   };
   
-  const routing = Router(user);
+  // const routing = Router(user);
 
   return (
     <Provider store={store} >
-      <NavigationContainer>{routing}</NavigationContainer>
+      <Main/>
+      {/* <NavigationContainer>{routing}</NavigationContainer> */}
     </Provider>
   );
 }

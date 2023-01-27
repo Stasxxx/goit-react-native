@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import { authSingUpUser } from '../redux/auth/authOperations'
 const initialState = {
-  login: "",
+  nickName: "",
   email: "",
   password: "",
 };
@@ -93,9 +93,9 @@ export default function RegistrationScreens({navigation}) {
               <Text style={styles.regTitle}>Регистрация</Text>
             <TextInput placeholder="Логин" onFocus={() => { setIsShowKeyboard(true), setLogin(true)}} 
               style={{ ...styles.login, borderColor: !login ? "#E8E8E8" : "#FF6C00" }}
-              value={state.login}
+              value={state.nickName}
               onBlur={() => setLogin(false)}
-              onChangeText={(value) => setState((prevState) => ({...prevState, login: value}))}
+              onChangeText={(value) => setState((prevState) => ({...prevState, nickName: value}))}
           />
             <TextInput selectionColor={{ borderColor: "#FF6C00" }} placeholder="Адрес электронной почты" onFocus={() => { setIsShowKeyboard(true),setEmail(true) }}
               style={{ ...styles.email, borderColor: !email ? "#E8E8E8" : "#FF6C00" }}
