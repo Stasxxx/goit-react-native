@@ -1,13 +1,18 @@
 import { NavigationContainer, useRoute } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { useState } from 'react';
 import { useFonts } from 'expo-font';
-
-
 import { Router } from './router';
-
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from './firebase/config';
 
 
 export default function App() {
+  const [user, setUser] = useState(null);
+
+  onAuthStateChanged(auth, (user) => { setUser(user) });
+
   const [fontsLoaded] = useFonts({
     'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
     'Roboto-Bold': require('./assets/fonts/Roboto-Bold.ttf'),
@@ -18,10 +23,11 @@ export default function App() {
     return null;
   };
   
-  const routing = Router(null)
+  const routing = Router(user);
+
   return (
-    <>
+    <Provider store={store} >
       <NavigationContainer>{routing}</NavigationContainer>
-    </>
+    </Provider>
   );
 }

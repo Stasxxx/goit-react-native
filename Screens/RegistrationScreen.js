@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as ImagePicker from 'expo-image-picker';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { useDispatch } from 'react-redux';
 
+import { authSingUpUser } from '../redux/auth/authOperations'
 const initialState = {
   login: "",
   email: "",
@@ -17,6 +19,8 @@ export default function RegistrationScreens({navigation}) {
   const [email, setEmail] = useState(false);
   const [showPass, setShowPass] = useState(true);
   const [state, setState] = useState(initialState);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
@@ -36,7 +40,9 @@ export default function RegistrationScreens({navigation}) {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     console.log(state);
-    navigation.navigate("Home");
+
+    dispatch(authSingUpUser(state))
+    // navigation.navigate("Home");
     setState(initialState)
   }
 

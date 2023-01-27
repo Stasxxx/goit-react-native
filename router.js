@@ -21,15 +21,15 @@ export const Router = (isAuth) => {
                     }}
                     name="Register"
                     component={RegistrationScreens} />
-                <AuthStack.Screen
+                {/* <AuthStack.Screen
                     options={{
                         headerShown: false,
                     }}
                     name="Home"
-                    component={Home} />
+                    component={Home} /> */}
             </AuthStack.Navigator>
         );
     }
-    // return (<Home/>)
+    return (<Home/>)
     
 }
