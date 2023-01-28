@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity,FlatList } from "react-native";
 import { StatusBar } from 'expo-status-bar';
-
-
+import { useDispatch } from 'react-redux';
+import { authSingOutUser } from "../../redux/auth/authOperations";
 
 export const DefaultScreenPosts = ({route, navigation}) => {
     const [posts, setPosts] = useState([]);
-    
+    const dispatch = useDispatch();
+
+    const lognOut = () => {
+        dispatch(authSingOutUser());
+    }
     useEffect(() => {
         
         if (route.params) {
@@ -20,7 +24,7 @@ export const DefaultScreenPosts = ({route, navigation}) => {
                 <Text style={styles.title}>
                     Публикации
                 </Text>
-                <TouchableOpacity style={styles.logout} activeOpacity={0.6} onPress={() => navigation.navigate('Login')}>
+                <TouchableOpacity style={styles.logout} activeOpacity={0.6} onPress={lognOut}>
                     <Image source={require('../Images/log-out.png')}/>
                  </TouchableOpacity>
             </View>
