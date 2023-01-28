@@ -3,35 +3,58 @@ import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity } from "reac
 import { StatusBar } from 'expo-status-bar';
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
-
+import { storage, db } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore"; 
 
 export const CreatePostsScreen = ({ navigation }) => {
     const [camera, setCamera] = useState(null);
     const [photo, setPhoto] = useState("");
+    const [fotoName, setFotoName] = useState("");
+    const [locationName, setLocationName] = useState("")
+    const [location, setLocation] = useState(null);
+
+    useEffect(() => {
+    (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+    })();
+    }, []);
 
     const takePhoto = async () => {
-        const photo = await camera.takePictureAsync();
-        const location = await Location.getCurrentPositionAsync({});
-        console.log(location.coords.latitude)
-        console.log(location.coords.longitude)
-
-        setPhoto(photo.uri);
+        const {uri} = await camera.takePictureAsync();
+        // const location = await Location.getCurrentPositionAsync({});
+        // console.log(location)
+        setPhoto(uri);
     };
     
     const sendPhoto = () => {
+        // uploadPhotoToServer()
+        uploadPostToServer();
         navigation.navigate('DefaultScreen', photo)
+    };
+
+    const uploadPostToServer = async() => {
+        const photo = await uploadPhotoToServer();
+        const createPost = await addDoc(collection(db, "posts"), {photo, fotoName, locationName, location: location.coords})
     }
     
-    useEffect(() => {
-    (async () => {
-      
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-    })();
-  }, []);
+    const uploadPhotoToServer = async () => {
+        const response = await fetch(photo);
+        const file = await response.blob();
+        const uniquePostId = Date.now().toString();
+
+        const storageRef = await ref(storage, `image/${uniquePostId}`);
+
+        await uploadBytes(storageRef, file);
+
+        const img = await getDownloadURL(storageRef);
+        return img;
+    }
+
+    
+    
      return (
         <View style={styles.container}>
              <View style={styles.header}>
@@ -46,17 +69,17 @@ export const CreatePostsScreen = ({ navigation }) => {
                 
              <View style={styles.publicationCont}>
                  
-                 <Camera style={styles.cameraCont} ref={setCamera}>
-                    <TouchableOpacity onPress={takePhoto}  activeOpacity={0.9}>
-                         <Image style={styles.cameraImg} source={require('../Images/camera.png')} />
-                    </TouchableOpacity>
-                 </Camera>
-                 <Text style={styles.addFoto}>Загрузите фото</Text>
+                <Camera style={styles.cameraCont} ref={setCamera}>
+                <TouchableOpacity onPress={takePhoto}  activeOpacity={0.9}>
+                        <Image style={styles.cameraImg} source={require('../Images/camera.png')} />
+                </TouchableOpacity>
+                </Camera>
+                <Text style={styles.addFoto}>Загрузите фото</Text>
                 
-                  <TextInput style={styles.textName} placeholder="Название..."/>
+                <TextInput style={styles.textName} placeholder="Название..." onChangeText={setFotoName}/>
                  
                 <View style={{marginTop: 30}} >
-                     <TextInput style={styles.textPlace} placeholder="Местность..."/>
+                     <TextInput style={styles.textPlace} placeholder="Местность..." onChangeText={setLocationName}/>
                      <Image style={styles.textPlaceImg} source={require('../Images/map-pin.png')} />
                 </View>
                 <TouchableOpacity style={styles.regBtn} activeOpacity={0.8} onPress={sendPhoto}>
