@@ -1,43 +1,55 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
-import { storage, db } from "../../firebase/config";
+import { storage, db, database, reff } from "../../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore"; 
+// import { set, push } from "firebase/database";
 
 export const CreatePostsScreen = ({ navigation }) => {
     const [camera, setCamera] = useState(null);
     const [photo, setPhoto] = useState("");
     const [fotoName, setFotoName] = useState("");
-    const [locationName, setLocationName] = useState("")
+    const [locationName, setLocationName] = useState("");
     const [location, setLocation] = useState(null);
+
+    const { userId, nickName } = useSelector((state) => state.auth);
 
     useEffect(() => {
     (async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
+        
+        if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
         let location = await Location.getCurrentPositionAsync({});
+        
         setLocation(location);
+        
     })();
     }, []);
 
     const takePhoto = async () => {
         const {uri} = await camera.takePictureAsync();
         // const location = await Location.getCurrentPositionAsync({});
-        // console.log(location)
+        
         setPhoto(uri);
     };
     
     const sendPhoto = () => {
         // uploadPhotoToServer()
         uploadPostToServer();
-        navigation.navigate('DefaultScreen', photo)
+        navigation.navigate('DefaultScreen')
     };
 
-    const uploadPostToServer = async() => {
+    const uploadPostToServer = async () => {
         const photo = await uploadPhotoToServer();
-        const createPost = await addDoc(collection(db, "posts"), {photo, fotoName, locationName, location: location.coords})
+        const uniquePostId = Date.now().toString();
+        const createPost = await addDoc(collection(db, "posts"), {photo, fotoName, locationName, location: location.coords, userId, nickName});
+        
     }
     
     const uploadPhotoToServer = async () => {
@@ -69,10 +81,10 @@ export const CreatePostsScreen = ({ navigation }) => {
                 
              <View style={styles.publicationCont}>
                  
-                <Camera style={styles.cameraCont} ref={setCamera}>
-                <TouchableOpacity onPress={takePhoto}  activeOpacity={0.9}>
-                        <Image style={styles.cameraImg} source={require('../Images/camera.png')} />
-                </TouchableOpacity>
+                 <Camera style={styles.cameraCont} ref={setCamera}>                     
+                    <TouchableOpacity onPress={takePhoto}  activeOpacity={0.9}>
+                            <Image style={styles.cameraImg} source={require('../Images/camera.png')} />
+                    </TouchableOpacity>
                 </Camera>
                 <Text style={styles.addFoto}>Загрузите фото</Text>
                 
@@ -142,7 +154,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent:'center',
         marginVertical: 90,
-        marginHorizontal: 141,
+        marginHorizontal: 150,
         opacity: 0.3,
     },
     addFoto: {

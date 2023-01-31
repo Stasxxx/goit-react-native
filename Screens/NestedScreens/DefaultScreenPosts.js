@@ -1,22 +1,39 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity,FlatList } from "react-native";
 import { StatusBar } from 'expo-status-bar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { authSingOutUser } from "../../redux/auth/authOperations";
+import { db } from "../../firebase/config";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export const DefaultScreenPosts = ({route, navigation}) => {
     const [posts, setPosts] = useState([]);
+    const { userId, nickName } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        getAllPosts()
+    }, [])
+    
+    const getAllPosts = async () => {
+        await onSnapshot(collection(db, "posts"), (data) => {
+            const pos = []
+            setPosts(pos)
+             data.forEach((doc) => (
+                 pos.push({ ...doc.data(), id: doc.id })
+                //  console.log(doc.data())
+             ))
+            // console.log(pos)
+            setPosts(pos)
+        })
+        console.log(posts)
+    }
 
     const lognOut = () => {
         dispatch(authSingOutUser());
     }
-    useEffect(() => {
-        
-        if (route.params) {
-            setPosts((prevState) => [...prevState, route.params])
-        }
-    },[route.params])
+
+    
     
     return (
         <View style={styles.container}>
