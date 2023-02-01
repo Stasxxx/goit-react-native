@@ -17,16 +17,9 @@ export const DefaultScreenPosts = ({route, navigation}) => {
     
     const getAllPosts = async () => {
         await onSnapshot(collection(db, "posts"), (data) => {
-            const pos = []
-            setPosts(pos)
-             data.forEach((doc) => (
-                 pos.push({ ...doc.data(), id: doc.id })
-                //  console.log(doc.data())
-             ))
-            // console.log(pos)
-            setPosts(pos)
+            setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
         })
-        console.log(posts)
+        // console.log(posts )
     }
 
     const lognOut = () => {
@@ -61,54 +54,34 @@ export const DefaultScreenPosts = ({route, navigation}) => {
                     </View> 
                 </View>
 
-                <FlatList data={posts}
-                keyExtractor={(item, indx) => indx.toString()}
-                renderItem={({ item }) => (
-                <View style={styles.imgCont}>
-                    <Image
-                        source={{ uri: item }}
-                            style={{ width:343, height: 240, borderRadius: 8}}
-                        />    
-                        <Text style={styles.postName}>Имя</Text>
-                        <View style={{flexDirection: "row", justifyContent: 'space-between', marginTop: 11}}>
-                        <View>
-                            <TouchableOpacity style={{flexDirection: "row"}} activeOpacity={0.6} onPress={() => navigation.navigate('Comments')}>
-                                <Image style={{width: 18,height: 18,}} source={require('../Images/Shape.png')}/>
-                                <Text style={{ marginLeft: 9 }}>0</Text>
-                            </TouchableOpacity>
-                            
-                        </View>
-                        <View>
-                            <TouchableOpacity style={{flexDirection: "row"}} activeOpacity={0.6} onPress={()=> navigation.navigate('Map')}>
-                                <Image style={{width: 24,height: 24,}} source={require('../Images/map-pin.png')}/>
-                                <Text style={{marginLeft: 9}}>Розташування</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-                )}
-                />
-                {/* <View >
+                
+                    <FlatList data={posts}
+                    keyExtractor={(item, indx) => indx.toString()}
+                    renderItem={({ item }) => (
                     <View style={styles.imgCont}>
-                            <Image style={styles.imgPost} source={require('../Images/camera.png')} />
-                    </View>
-                    <Text style={styles.postName}>Имя</Text> 
-                    <View style={{flexDirection: "row", justifyContent: 'space-between', marginTop: 11}}>
-                        <View style={{flexDirection: "row"}}>
-                            <TouchableOpacity style={{ marginRight: 9 }} activeOpacity={0.6} onPress={() => navigation.navigate('Comments')}>
-                                <Image style={{width: 18,height: 18,}} source={require('../Images/Shape.png')}/>
-                            </TouchableOpacity>
-                            <Text>0</Text>
+                        <Image
+                            source={{ uri: item.photo }}
+                                style={{ width:343, height: 240, borderRadius: 8}}
+                            />    
+                            <Text style={styles.postName}>{item.fotoName}</Text>
+                            <View style={{flexDirection: "row", justifyContent: 'space-between', marginTop: 11}}>
+                            <View>
+                                <TouchableOpacity style={{flexDirection: "row"}} activeOpacity={0.6} onPress={() => navigation.navigate('Comments', {postId: item.id})}>
+                                    <Image style={{width: 18,height: 18,}} source={require('../Images/Shape.png')}/>
+                                    <Text style={{ marginLeft: 9 }}>0</Text>
+                                </TouchableOpacity>
+                                
+                            </View>
+                            <View>
+                                <TouchableOpacity style={{flexDirection: "row"}} activeOpacity={0.6} onPress={()=> navigation.navigate('Map', {location:item.location})}>
+                                    <Image style={{width: 24,height: 24,}} source={require('../Images/map-pin.png')}/>
+                                    <Text style={{marginLeft: 9}}>{item.locationName}</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        <View style={{flexDirection: "row"}}>
-                            <TouchableOpacity style={{marginRight: 9}} activeOpacity={0.6} onPress={()=> navigation.navigate('Map')}>
-                                <Image style={{width: 24,height: 24,}} source={require('../Images/map-pin.png')}/>
-                            </TouchableOpacity>
-                            <Text>Розташування</Text>
-                        </View>
                     </View>
-                    
-                </View> */}
+                    )}
+                    />
             </View>
             <StatusBar style="auto" />
         </View>
@@ -146,6 +119,7 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
         paddingRight: 16,
         marginTop: 32,
+        paddingBottom:45,
     },
     user: {
         flexDirection: 'row',
