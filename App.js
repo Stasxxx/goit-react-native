@@ -10,9 +10,6 @@ import {Main} from './components/Main';
 
 
 export default function App() {
-  // const [user, setUser] = useState(null);
-
-  // onAuthStateChanged(auth, (user) => { setUser(user) });
 
   const [fontsLoaded] = useFonts({
     'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),

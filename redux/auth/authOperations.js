@@ -5,21 +5,24 @@ import { onAuthStateChanged } from "firebase/auth";
 
 const {updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
 
-export const authSingUpUser = ({nickName, email, password}) => async (dispatch, getState) => {
+export const authSingUpUser = ({nickName, email, password, image}) => async (dispatch, getState) => {
     try {
         await createUserWithEmailAndPassword(auth, email, password);
         const user = await auth.currentUser;
 
         await updateProfile(user, {
             displayName: nickName,
+            photoURL: image,
         })
-
-        const { uid, displayName } = await auth.currentUser;
+        console.log(image)
+        console.log(user)
+        const { uid, displayName, photoURL } = await auth.currentUser;
         
         dispatch(
             updateUserProfile({
                 userId: uid,
                 nickName: displayName,
+                userPhoto: photoURL
             }));
     } catch(error) {
         console.log("error", error);

@@ -41,7 +41,7 @@ export default function RegistrationScreens({navigation}) {
     Keyboard.dismiss();
     console.log(state);
 
-    dispatch(authSingUpUser(state))
+    dispatch(authSingUpUser({...state, image}))
     // navigation.navigate("Home");
     setState(initialState)
   }

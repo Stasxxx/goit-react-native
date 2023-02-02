@@ -1,22 +1,43 @@
-import { useState } from "react";
-import { View, Text,Image, TouchableOpacity,TextInput,StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import { db } from "../../firebase/config";
-import { doc, addDoc, collection } from "firebase/firestore"
+import { doc, addDoc, collection, onSnapshot } from "firebase/firestore"
 import { useSelector } from "react-redux";
 import { async } from "@firebase/util";
 
 export const CommentsScreen = ({route}) => {
     const { postId } = route.params;
-    const [ comment, setComment ] = useState("");
+    const [comment, setComment] = useState("");
+    const [ allComments, setaAllComments ] = useState(null);
     const { nickName } = useSelector((state) => state.auth);
 
+    useEffect(() => {
+        getAllPosts();
+    }, []);
+
     const createPost = async () => {
-        await addDoc(collection(doc(db, "posts", postId), "comments"), {comment, nickName})
+        await addDoc(collection(doc(db, "posts", postId), "comments"), { comment, nickName });
      };
-    // console.log(postId)
+
+    const getAllPosts = async () => {
+        await onSnapshot(collection(doc(db, "posts", postId), "comments"), (data) => {
+            setaAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+        })
+    }
     return (
         <View >
-            <Text>Hi</Text>
+            <SafeAreaView style={styles.container}>
+                <FlatList
+                    data={allComments}
+                    renderItem={({ item }) =>
+                        <View>
+                            <Text>{item.nickName }</Text>
+                            <Text>{item.comment }</Text>
+                        </View>
+                    }
+                    keyExtractor={item => item.id}
+                />
+            </SafeAreaView>
 
             <View style={{marginTop: "auto"}}>
                 <TextInput style={styles.input } placeholder="Комментировать..." onChangeText={setComment}/>

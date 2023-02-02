@@ -61,14 +61,14 @@ export const DefaultScreenPosts = ({route, navigation}) => {
                     <View style={styles.imgCont}>
                         <Image
                             source={{ uri: item.photo }}
-                                style={{ width:343, height: 240, borderRadius: 8}}
-                            />    
-                            <Text style={styles.postName}>{item.fotoName}</Text>
-                            <View style={{flexDirection: "row", justifyContent: 'space-between', marginTop: 11}}>
+                            style={{ width:343, height: 240, borderRadius: 8}}
+                        />    
+                        <Text style={styles.postName}>{item.fotoName}</Text>
+                        <View style={{flexDirection: "row", justifyContent: 'space-between', marginTop: 11}}>
                             <View>
                                 <TouchableOpacity style={{flexDirection: "row"}} activeOpacity={0.6} onPress={() => navigation.navigate('Comments', {postId: item.id})}>
                                     <Image style={{width: 18,height: 18,}} source={require('../Images/Shape.png')}/>
-                                    <Text style={{ marginLeft: 9 }}>0</Text>
+                                    <Text style={{ marginLeft: 9 }}>00</Text>
                                 </TouchableOpacity>
                                 
                             </View>

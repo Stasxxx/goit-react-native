@@ -1,14 +1,34 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState} from 'react';
+import { useState, useEffect} from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
-
-
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Keyboard, TouchableWithoutFeedback, SafeAreaView, FlatList } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { db } from '../../firebase/config';
+import { authSingOutUser } from '../../redux/auth/authOperations';
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 export const ProfileScreen = ({navigation}) => {
     const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [image, setImage] = useState(null);
+    const [image, setImage] = useState(null);
+    const [userPosts, setUserPosts] = useState([])
     
+    const dispatch = useDispatch();
+    const { userId, nickName, userPhoto } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        getUserPosts();
+    }, []);
+
+    const getUserPosts = async () => {
+        const postsRef = await collection(db, "posts")
+        await onSnapshot(query(postsRef, where("userId", "==", userId)), (data) => {
+            setUserPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+        })
+    };
+
+    const lognOut = () => {
+        dispatch(authSingOutUser());
+    }
 
     const addImage = async () => {
     let _image = await ImagePicker.launchImageLibraryAsync({
@@ -44,11 +64,51 @@ export const ProfileScreen = ({navigation}) => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.logout} activeOpacity={0.6} onPress={() => navigation.navigate('Login')}>
+                    <TouchableOpacity style={styles.logout} activeOpacity={0.6} onPress={lognOut}>
                             <Image style={{width: 24,height: 24,}} source={require('../Images/log-out.png')}/>
                     </TouchableOpacity>
-                    <Text style={styles.name}>Natali Romanova</Text>
-                <View style={styles.post}>
+                    <Text style={styles.name}>{nickName}</Text>
+
+                    <SafeAreaView style={styles.container}>
+                        <FlatList
+                            data={userPosts}
+                            keyExtractor={(item, indx) => indx.toString()}
+                            renderItem={({ item }) =>
+                                <View style={styles.post}>
+                                    <Image
+                                        style={styles.postImg}
+                                        source={{ uri: item.photo }}
+                                    />
+                                    <Text style={styles.postName}>{item.fotoName}</Text>    
+                                    <View style={styles.comentCont}>
+                                        <View style={{ flex: 1, flexDirection: 'row'}}>
+                                            <View style={{flexDirection: 'row', marginRight: 24}}>
+                                                <TouchableOpacity style={{marginRight: 9, flexDirection: 'row'}} activeOpacity={0.6} onPress={()=> navigation.navigate('Comments', {postId: item.id})}>
+                                                    <Image style={{width: 18,height: 18, marginRight: 9}} source={require('../Images/Coment.png')}/>
+                                                    <Text>0</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                            <View style={{flexDirection: 'row'}}>
+                                                <TouchableOpacity style={{marginRight: 10, flexDirection: 'row'}} activeOpacity={0.6} >
+                                                    <Image style={{width: 18,height: 18, marginRight: 10}} source={require('../Images/Like.png')}/>
+                                                    <Text>15</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                        <View style={{ flexDirection: 'row'}}>
+                                            <TouchableOpacity style={{ marginRight: 4, flexDirection: 'row',alignItems: "center" }} activeOpacity={0.6} onPress={() => navigation.navigate('Map', {location:item.location})}>
+                                                <Image style={{width: 16,height: 18, marginRight: 8}} source={require('../Images/map-pin.png')}/>
+                                                <Text style={{borderBottomWidth: 1, borderColor: "#212121"}}>{item.locationName}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+                            }
+                            
+                        />
+                    </SafeAreaView>
+
+                {/* <View style={styles.post}>
                         <Image style={styles.postImg}/>
                         <Text style={styles.postName}>Ім'я посту</Text>    
                         <View style={styles.comentCont}>
@@ -73,7 +133,7 @@ export const ProfileScreen = ({navigation}) => {
                                 <Text>Розташування</Text>
                             </View>
                         </View>
-                </View>
+                </View> */}
             </View>
 
             </ImageBackground>
