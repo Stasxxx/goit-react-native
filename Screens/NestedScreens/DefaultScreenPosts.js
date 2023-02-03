@@ -8,7 +8,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 
 export const DefaultScreenPosts = ({route, navigation}) => {
     const [posts, setPosts] = useState([]);
-    const { userId, nickName } = useSelector((state) => state.auth);
+    const { email, nickName,userPhoto } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -42,14 +42,14 @@ export const DefaultScreenPosts = ({route, navigation}) => {
             <View style={styles.publicationCont}>
                 <View style={styles.user}>
                     <View style={styles.img}>
-                        <Image />
+                          { userPhoto && <Image source={{uri: userPhoto}} style={{ width: 60, height: 60 }}/>}
                     </View>
                     <View style={styles.userData}>
                         <Text style={styles.userName}>
-                        Name
+                        {nickName}
                         </Text>
                         <Text style={styles.userEmail}>
-                        Email@email
+                        {email}
                         </Text>
                     </View> 
                 </View>
@@ -68,7 +68,10 @@ export const DefaultScreenPosts = ({route, navigation}) => {
                             <View>
                                 <TouchableOpacity style={{flexDirection: "row"}} activeOpacity={0.6} onPress={() => navigation.navigate('Comments', {postId: item.id})}>
                                     <Image style={{width: 18,height: 18,}} source={require('../Images/Shape.png')}/>
-                                    <Text style={{ marginLeft: 9 }}>00</Text>
+                                        {item.commentsNumber ?
+                                            <Text style={{ marginLeft: 9 }}>{item.commentsNumber}</Text> :
+                                            <Text style={{ marginLeft: 9 }}>0</Text>
+                                        }
                                 </TouchableOpacity>
                                 
                             </View>
@@ -129,6 +132,7 @@ const styles = StyleSheet.create({
         height: 60,
         borderRadius: 16,
         backgroundColor: "#F6F6F6",
+        overflow:'hidden',
     },
     userData: {
         marginLeft: 8,

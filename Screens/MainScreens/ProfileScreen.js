@@ -31,16 +31,16 @@ export const ProfileScreen = ({navigation}) => {
     }
 
     const addImage = async () => {
-    let _image = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    aspect: [4,3],
-    quality: 1,
-    });
-    const uri = _image.assets[0].uri 
-    if (!_image.canceled) {
-        setImage(uri);
-    }
+        let _image = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4,3],
+            quality: 1,
+        });
+        const uri = _image.assets[0].uri 
+            if (!_image.canceled) {
+                setImage(uri);
+        }
         };
     
     return (
@@ -54,7 +54,7 @@ export const ProfileScreen = ({navigation}) => {
                     <View style={styles.addFoto}>
                         <View style={styles.contFoto}>
                         {
-                            image  && <Image source={{ uri: image }} style={{ width: 120, height: 120 }} />
+                            userPhoto  && <Image source={{ uri: userPhoto }} style={{ width: 120, height: 120 }} />
                         }                    
                         </View>
                         <TouchableOpacity onPress={addImage}>
@@ -85,7 +85,7 @@ export const ProfileScreen = ({navigation}) => {
                                             <View style={{flexDirection: 'row', marginRight: 24}}>
                                                 <TouchableOpacity style={{marginRight: 9, flexDirection: 'row'}} activeOpacity={0.6} onPress={()=> navigation.navigate('Comments', {postId: item.id})}>
                                                     <Image style={{width: 18,height: 18, marginRight: 9}} source={require('../Images/Coment.png')}/>
-                                                    <Text>0</Text>
+                                                    <Text>{item.commentsNumber}</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={{flexDirection: 'row'}}>
@@ -108,32 +108,7 @@ export const ProfileScreen = ({navigation}) => {
                         />
                     </SafeAreaView>
 
-                {/* <View style={styles.post}>
-                        <Image style={styles.postImg}/>
-                        <Text style={styles.postName}>Ім'я посту</Text>    
-                        <View style={styles.comentCont}>
-                            <View style={{ flex: 1, flexDirection: 'row'}}>
-                                <View style={{flexDirection: 'row', marginRight: 24}}>
-                                    <TouchableOpacity style={{marginRight: 9}} activeOpacity={0.6} onPress={()=> navigation.navigate('Comments')}>
-                                        <Image style={{width: 18,height: 18,}} source={require('../Images/Coment.png')}/>
-                                    </TouchableOpacity>
-                                    <Text>0</Text>
-                                </View>
-                                <View style={{flexDirection: 'row'}}>
-                                    <TouchableOpacity style={{marginRight: 10}} activeOpacity={0.6} >
-                                        <Image style={{width: 18,height: 18,}} source={require('../Images/Like.png')}/>
-                                    </TouchableOpacity>
-                                    <Text>15</Text>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: 'row'}}>
-                                <TouchableOpacity style={{ marginRight: 4 }} activeOpacity={0.6} onPress={() => navigation.navigate('Map')}>
-                                <Image style={{width: 18,height: 18,}} source={require('../Images/map-pin.png')}/>
-                                </TouchableOpacity>
-                                <Text>Розташування</Text>
-                            </View>
-                        </View>
-                </View> */}
+               
             </View>
 
             </ImageBackground>

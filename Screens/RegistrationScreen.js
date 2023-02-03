@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useDispatch } from 'react-redux';
 
+
 import { authSingUpUser } from '../redux/auth/authOperations'
 const initialState = {
   nickName: "",

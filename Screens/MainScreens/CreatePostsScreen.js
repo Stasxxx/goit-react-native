@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity } from "reac
 import { StatusBar } from 'expo-status-bar';
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
-import { storage, db, database, reff } from "../../firebase/config";
+import { storage, db } from "../../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore"; 
 // import { set, push } from "firebase/database";

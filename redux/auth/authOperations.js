@@ -2,8 +2,10 @@ import {auth} from "../../firebase/config";
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { authSlice } from "./authReducer";
 import { onAuthStateChanged } from "firebase/auth";
+import { storage } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const {updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
+const {updateUserProfile, authStateChange, authSignOut, adduserPhoto } = authSlice.actions;
 
 export const authSingUpUser = ({nickName, email, password, image}) => async (dispatch, getState) => {
     try {
@@ -14,10 +16,22 @@ export const authSingUpUser = ({nickName, email, password, image}) => async (dis
             displayName: nickName,
             photoURL: image,
         })
-        console.log(image)
-        console.log(user)
-        const { uid, displayName, photoURL } = await auth.currentUser;
         
+        if (image) {
+            const response = await fetch(image);
+            const file = await response.blob();
+
+            const storageRef = await ref(storage, `image/${nickName}`);
+
+            await uploadBytes(storageRef, file);
+
+            const img = await getDownloadURL(storageRef);
+            await updateProfile(user, {
+            photoURL: img,
+        })}
+
+        const { uid, displayName, photoURL } = await auth.currentUser;
+        console.log(photoURL)
         dispatch(
             updateUserProfile({
                 userId: uid,
@@ -50,11 +64,29 @@ export const authStateChangeUser = () => async (dispatch, getState) => {
         if (user) {
             const userUpdateProfile = {
                 nickName: user.displayName,
-                userId: user.uid,
+                userId: user.uid,  
+                email: user.email,
             }
-            
+            const userUpdatePhoto = {
+                userPhoto: user.photoURL
+            }
+
             dispatch(authStateChange({ stateChange: true }));
             dispatch(updateUserProfile(userUpdateProfile));
+            dispatch(adduserPhoto(userUpdatePhoto))
        }
     });
- };
+};
+ 
+export const addPhoto = () => async (dispatch, getState) => {
+    
+    await onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const userUpdatePhoto = {
+                userPhoto: photoURL,
+            }
+
+            dispatch(adduserPhoto(userUpdatePhoto))
+        }
+    })
+}

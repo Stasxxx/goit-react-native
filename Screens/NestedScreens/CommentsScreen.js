@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import { db } from "../../firebase/config";
-import { doc, addDoc, collection, onSnapshot } from "firebase/firestore"
+import { doc, addDoc, collection, onSnapshot, updateDoc } from "firebase/firestore"
 import { useSelector } from "react-redux";
-import { async } from "@firebase/util";
 
 export const CommentsScreen = ({route}) => {
     const { postId } = route.params;
     const [comment, setComment] = useState("");
-    const [ allComments, setaAllComments ] = useState(null);
+    const [ allComments, setAllComments ] = useState(null);
     const { nickName } = useSelector((state) => state.auth);
 
     useEffect(() => {
@@ -17,13 +16,26 @@ export const CommentsScreen = ({route}) => {
 
     const createPost = async () => {
         await addDoc(collection(doc(db, "posts", postId), "comments"), { comment, nickName });
+        await addCommentsNumber()
      };
 
     const getAllPosts = async () => {
         await onSnapshot(collection(doc(db, "posts", postId), "comments"), (data) => {
-            setaAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+            setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
         })
+        
+        addCommentsNumber()
+   
     }
+    // console.log(allComments)
+    const addCommentsNumber = async () => {
+        if (allComments === 0 || allComments !== null) {
+            const number = await allComments.length;
+            console.log(number)
+           return await updateDoc(doc(db, "posts", postId), { commentsNumber: number })
+        }
+    }
+    // console.log(allComments)
     return (
         <View >
             <SafeAreaView style={styles.container}>
